@@ -1,5 +1,6 @@
 import uuid
 from sqlalchemy.orm import Session
+from sqlalchemy import or_ 
 from app.enums.ticket_status import TicketStatus
 from app.models.ticket import Ticket 
 from app.schemas.ticket import TicketCreate
@@ -25,3 +26,21 @@ def create_ticket(db:Session, ticket:TicketCreate):
     except Exception as e:
         db.rollback()
         raise e
+
+def get_all_tickets(db:Session,status:str | None=None, search:  str | None=None):
+    query =db.query(Ticket)
+
+    if status:
+        query=query.filter(Ticket.status==status)
+
+    if search:
+        query=query.filter(
+            or_(
+                Ticket.customer_name.ilike(f"%{search}%"),
+                Ticket.customer_email.ilike(f"%{search}%"),
+                Ticket.subject.ilike(f"%{search}%"),
+                Ticket.ticket_id.ilike(f"%{search}%"),
+            )
+        )
+
+    return query.order_by(Ticket.created_at.desc()).all()
