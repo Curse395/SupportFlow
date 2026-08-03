@@ -1,8 +1,8 @@
 from fastapi import APIRouter,Depends,status
 from sqlalchemy.orm import Session
 from app.core.database import get_db
-from app.schemas.ticket import TicketCreate, TicketResponse
-from app.services.ticket_service import create_ticket,get_all_tickets,get_ticket_by_id
+from app.schemas.ticket import TicketCreate, TicketResponse, TicketUpdate
+from app.services.ticket_service import create_ticket,get_all_tickets,get_ticket_by_id,update_ticket
 
 router=APIRouter(prefix="/api/tickets",tags=["Tickets"],)
 
@@ -29,3 +29,10 @@ def get_tickets_id(ticket_id:str,
                      db: Session=Depends(get_db)
                      ):
     return get_ticket_by_id(db,ticket_id)
+
+@router.put("/{ticket_id}",response_model=TicketResponse)
+def update_existing_ticket(ticket_id:str,
+                  ticket:TicketUpdate,
+                  db:Session=Depends(get_db)
+):
+    return update_ticket(db, ticket_id,ticket)

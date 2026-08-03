@@ -4,7 +4,8 @@ from sqlalchemy import or_
 from fastapi import HTTPException, status
 from app.enums.ticket_status import TicketStatus
 from app.models.ticket import Ticket 
-from app.schemas.ticket import TicketCreate
+from app.schemas.ticket import TicketCreate, TicketUpdate
+from app.models.note import Note 
 
 
 
@@ -59,3 +60,25 @@ def get_ticket_by_id(db: Session, ticket_id:str):
             status_code=404,detail="Ticket could not be found"
         )
     return ticket
+
+def update_ticket(db:Session, ticket_id:str, ticket_update:TicketUpdate):
+    ticket=(db.query(Ticket).filter(Ticket.ticket_id==ticket_id).first())
+
+    if not ticket:
+        raise HTTPException(
+            status_code=404,detail="Ticket could not be found"
+        )
+
+    ticket.status=ticket_update.status
+
+    if ticket_update.note_text:
+        note=Note(
+            ticket_id=ticket.id,
+            note_text=ticket_update.note_text
+        )
+
+        db.add(note)
+
+    db.commit()
+    db.refresh(ticket)
+    return ticket 
