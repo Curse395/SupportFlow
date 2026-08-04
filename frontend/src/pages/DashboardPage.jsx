@@ -80,12 +80,31 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const [statsResponse, ticketsResponse] = await Promise.all([
+        const fetchAllTickets = async () => {
+          const allTickets = []
+          const limit = 100
+          let currentPage = 1
+
+          while (true) {
+            const response = await axios.get('http://127.0.0.1:8000/api/tickets/', {
+              params: { page: currentPage, limit },
+            })
+            allTickets.push(...response.data)
+
+            if (response.data.length < limit) {
+              return allTickets
+            }
+
+            currentPage += 1
+          }
+        }
+
+        const [statsResponse, allTickets] = await Promise.all([
           axios.get('http://127.0.0.1:8000/api/dashboard/stats'),
-          axios.get('http://127.0.0.1:8000/api/tickets/', { params: { limit: 100 } }),
+          fetchAllTickets(),
         ])
         setStats(statsResponse.data)
-        setTickets(ticketsResponse.data)
+        setTickets(allTickets)
       } catch {
         setError(true)
         showToast('We couldn’t load dashboard statistics. Please try again later.', 'error')
