@@ -118,16 +118,22 @@ export default function ReportsPage() {
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <DashboardCard title="Monthly Tickets">
-              <div className="h-[260px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={monthlyData} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
-                    <XAxis dataKey="label" tickLine={false} axisLine={false} tick={{ fill: '#64748b', fontSize: 12 }} />
-                    <YAxis allowDecimals={false} tickLine={false} axisLine={false} tick={{ fill: '#64748b', fontSize: 12 }} />
-                    <Tooltip cursor={{ fill: '#f8fafc' }} />
-                    <Bar dataKey="value" name="Tickets" fill="#2563eb" radius={[4, 4, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
+              {monthlyData.length === 0 ? (
+                <div className="flex h-[260px] items-center justify-center rounded-lg border border-dashed border-slate-200 bg-slate-50/50 px-4 text-center">
+                  <p className="text-sm font-medium text-slate-400">No monthly ticket data is available yet.</p>
+                </div>
+              ) : (
+                <div className="h-[260px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={monthlyData} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
+                      <XAxis dataKey="label" tickLine={false} axisLine={false} tick={{ fill: '#64748b', fontSize: 12 }} />
+                      <YAxis allowDecimals={false} tickLine={false} axisLine={false} tick={{ fill: '#64748b', fontSize: 12 }} />
+                      <Tooltip cursor={{ fill: '#f8fafc' }} />
+                      <Bar dataKey="value" name="Tickets" fill="#2563eb" radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              )}
             </DashboardCard>
 
             <DashboardCard title="Ticket Distribution">
@@ -135,14 +141,18 @@ export default function ReportsPage() {
                 {[['Status', statusData], ['Priority', priorityData]].map(([title, data]) => (
                   <div key={title}>
                     <p className="mb-2 text-sm font-medium text-slate-700">{title}</p>
-                    <div className="space-y-2">
-                      {data.map((item) => (
-                        <div key={item.label} className="flex items-center justify-between text-sm">
-                          <span className="text-slate-500">{item.label}</span>
-                          <span className="font-medium text-slate-900">{item.value}</span>
-                        </div>
-                      ))}
-                    </div>
+                    {data.length === 0 ? (
+                      <p className="text-sm text-slate-400">No data available.</p>
+                    ) : (
+                      <div className="space-y-2">
+                        {data.map((item) => (
+                          <div key={item.label} className="flex items-center justify-between text-sm">
+                            <span className="text-slate-500">{item.label}</span>
+                            <span className="font-medium text-slate-900">{item.value}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

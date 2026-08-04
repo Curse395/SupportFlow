@@ -40,6 +40,14 @@ function ChartSkeleton() {
   )
 }
 
+function EmptyChartState({ message }) {
+  return (
+    <div className="flex h-[240px] items-center justify-center rounded-lg border border-dashed border-slate-200 bg-slate-50/50 px-4 text-center">
+      <p className="text-sm font-medium text-slate-400">{message}</p>
+    </div>
+  )
+}
+
 function getDailyTicketData(tickets) {
   const days = Array.from({ length: 7 }, (_, index) => {
     const date = new Date()
@@ -123,6 +131,8 @@ export default function DashboardPage() {
         <DashboardCard title="Tickets by Status">
           {loading ? (
             <ChartSkeleton />
+          ) : statusData.every((item) => item.value === 0) ? (
+            <EmptyChartState message="No ticket status data is available yet." />
           ) : (
             <div className="h-[240px]">
               <ResponsiveContainer width="100%" height="100%">
@@ -143,6 +153,8 @@ export default function DashboardPage() {
         <DashboardCard title="Tickets by Priority">
           {loading ? (
             <ChartSkeleton />
+          ) : priorityData.every((item) => item.value === 0) ? (
+            <EmptyChartState message="No ticket priority data is available yet." />
           ) : (
             <div className="h-[240px]">
               <ResponsiveContainer width="100%" height="100%">
@@ -164,6 +176,8 @@ export default function DashboardPage() {
       <DashboardCard title="Daily Tickets">
         {loading ? (
           <ChartSkeleton />
+        ) : dailyTicketData.every((item) => item.tickets === 0) ? (
+          <EmptyChartState message="No tickets were created in the last seven days." />
         ) : (
           <div className="h-[260px]">
             <ResponsiveContainer width="100%" height="100%">

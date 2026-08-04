@@ -77,6 +77,7 @@ export default function TicketsPage() {
     priorityFilter === 'All'
       ? tickets
       : tickets.filter((ticket) => ticket.priority === priorityFilter)
+  const hasActiveFilters = search || statusFilter !== 'All' || priorityFilter !== 'All'
 
   return (
     <div className="space-y-6">
@@ -152,7 +153,12 @@ export default function TicketsPage() {
           </p>
         ) : (
           <>
-            <TicketTable tickets={displayedTickets} onViewTicket={handleViewTicket} />
+            <TicketTable
+              tickets={displayedTickets}
+              onViewTicket={handleViewTicket}
+              emptyTitle={hasActiveFilters ? 'No tickets match your filters' : 'No tickets found'}
+              emptyDescription={hasActiveFilters ? 'Try adjusting your search or filter selection.' : 'Create a ticket to get started.'}
+            />
             <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-4">
               <button
                 type="button"
