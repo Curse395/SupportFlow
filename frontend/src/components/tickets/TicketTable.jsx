@@ -32,7 +32,7 @@ function PriorityBadge({ priority }) {
   )
 }
 
-export default function TicketTable({ tickets = [] }) {
+export default function TicketTable({ tickets = [], onViewTicket }) {
   if (tickets.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
@@ -82,6 +82,7 @@ export default function TicketTable({ tickets = [] }) {
               <td className="py-4">
                 <button
                   type="button"
+                  onClick={() => onViewTicket?.(ticket.ticket_id)}
                   className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-50"
                 >
                   View

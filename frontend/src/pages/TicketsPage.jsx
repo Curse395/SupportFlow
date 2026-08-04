@@ -1,20 +1,20 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { Plus, Search } from 'lucide-react'
+import TicketDetailDrawer from '../components/tickets/TicketDetailDrawer'
 import TicketTable from '../components/tickets/TicketTable'
 
 export default function TicketsPage() {
   const [tickets, setTickets] = useState([])
-  console.log(tickets)
   const [loading, setLoading] = useState(true)
+  const [selectedTicketId, setSelectedTicketId] = useState(null)
+  const [drawerOpen, setDrawerOpen] = useState(false)
 
   useEffect(() => {
     const fetchTickets = async () => {
       try {
         const response = await axios.get('http://127.0.0.1:8000/api/tickets/')
-        console.log("API Response:", response.data)
         setTickets(response.data)
-        console.log(response.data)
       } catch {
         setTickets([])
       } finally {
@@ -25,7 +25,15 @@ export default function TicketsPage() {
     fetchTickets()
   }, [])
 
-  console.log("Ticket State:", tickets)
+  const handleViewTicket = (ticketId) => {
+    setSelectedTicketId(ticketId)
+    setDrawerOpen(true)
+  }
+
+  const handleCloseDrawer = () => {
+    setDrawerOpen(false)
+    setSelectedTicketId(null)
+  }
 
   return (
     <div className="space-y-6">
@@ -91,9 +99,15 @@ export default function TicketsPage() {
             Loading...
           </p>
         ) : (
-          <TicketTable tickets={tickets} />
+          <TicketTable tickets={tickets} onViewTicket={handleViewTicket} />
         )}
       </div>
+
+      <TicketDetailDrawer
+        ticketId={selectedTicketId}
+        open={drawerOpen}
+        onClose={handleCloseDrawer}
+      />
     </div>
   )
 }
