@@ -1,29 +1,32 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import axios from 'axios'
 import { Plus, Search } from 'lucide-react'
 import TicketDetailDrawer from '../components/tickets/TicketDetailDrawer'
 import TicketTable from '../components/tickets/TicketTable'
+import CreateTicketModal from '../components/tickets/CreateTicketModal'
 
 export default function TicketsPage() {
   const [tickets, setTickets] = useState([])
   const [loading, setLoading] = useState(true)
   const [selectedTicketId, setSelectedTicketId] = useState(null)
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [createModalOpen, setCreateModalOpen] = useState(false)
+  const [successMessage, setSuccessMessage] = useState('')
+
+  const fetchTickets = useCallback(async () => {
+    try {
+      const response = await axios.get('http://127.0.0.1:8000/api/tickets/')
+      setTickets(response.data)
+    } catch {
+      setTickets([])
+    } finally {
+      setLoading(false)
+    }
+  }, [])
 
   useEffect(() => {
-    const fetchTickets = async () => {
-      try {
-        const response = await axios.get('http://127.0.0.1:8000/api/tickets/')
-        setTickets(response.data)
-      } catch {
-        setTickets([])
-      } finally {
-        setLoading(false)
-      }
-    }
-
     fetchTickets()
-  }, [])
+  }, [fetchTickets])
 
   const handleViewTicket = (ticketId) => {
     setSelectedTicketId(ticketId)
@@ -33,6 +36,11 @@ export default function TicketsPage() {
   const handleCloseDrawer = () => {
     setDrawerOpen(false)
     setSelectedTicketId(null)
+  }
+
+  const handleTicketCreated = async () => {
+    await fetchTickets()
+    setSuccessMessage('Ticket created successfully.')
   }
 
   return (
@@ -85,6 +93,10 @@ export default function TicketsPage() {
 
           <button
             type="button"
+            onClick={() => {
+              setSuccessMessage('')
+              setCreateModalOpen(true)
+            }}
             className="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700"
           >
             <Plus className="h-4 w-4" aria-hidden="true" />
@@ -92,6 +104,12 @@ export default function TicketsPage() {
           </button>
         </div>
       </div>
+
+      {successMessage && (
+        <p className="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-700" role="status">
+          {successMessage}
+        </p>
+      )}
 
       <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         {loading ? (
@@ -107,6 +125,12 @@ export default function TicketsPage() {
         ticketId={selectedTicketId}
         open={drawerOpen}
         onClose={handleCloseDrawer}
+      />
+
+      <CreateTicketModal
+        open={createModalOpen}
+        onClose={() => setCreateModalOpen(false)}
+        onCreated={handleTicketCreated}
       />
     </div>
   )
