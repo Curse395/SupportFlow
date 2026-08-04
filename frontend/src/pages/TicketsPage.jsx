@@ -1,34 +1,32 @@
+import { useEffect, useState } from 'react'
+import axios from 'axios'
 import { Plus, Search } from 'lucide-react'
 import TicketTable from '../components/tickets/TicketTable'
 
-const SAMPLE_TICKETS = [
-  {
-    id: 'TKT-1001',
-    customer: 'Sarah Johnson',
-    subject: 'Unable to reset password',
-    priority: 'High',
-    status: 'Open',
-    updated: 'Aug 4, 2026',
-  },
-  {
-    id: 'TKT-1002',
-    customer: 'Michael Chen',
-    subject: 'Billing inquiry for last invoice',
-    priority: 'Medium',
-    status: 'In Progress',
-    updated: 'Aug 3, 2026',
-  },
-  {
-    id: 'TKT-1003',
-    customer: 'Emily Davis',
-    subject: 'Feature request: export reports',
-    priority: 'Low',
-    status: 'Closed',
-    updated: 'Aug 1, 2026',
-  },
-]
-
 export default function TicketsPage() {
+  const [tickets, setTickets] = useState([])
+  console.log(tickets)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchTickets = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/api/tickets/')
+        console.log("API Response:", response.data)
+        setTickets(response.data)
+        console.log(response.data)
+      } catch {
+        setTickets([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchTickets()
+  }, [])
+
+  console.log("Ticket State:", tickets)
+
   return (
     <div className="space-y-6">
       <div>
@@ -88,7 +86,13 @@ export default function TicketsPage() {
       </div>
 
       <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-        <TicketTable tickets={SAMPLE_TICKETS} />
+        {loading ? (
+          <p className="py-16 text-center text-sm font-medium text-slate-500">
+            Loading...
+          </p>
+        ) : (
+          <TicketTable tickets={tickets} />
+        )}
       </div>
     </div>
   )

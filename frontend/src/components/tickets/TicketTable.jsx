@@ -39,7 +39,7 @@ export default function TicketTable({ tickets = [] }) {
         <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-slate-100">
           <TicketX className="h-7 w-7 text-slate-400" aria-hidden="true" />
         </div>
-        <p className="text-sm font-medium text-slate-500">No tickets available</p>
+        <p className="text-sm font-medium text-slate-500">No tickets found</p>
       </div>
     )
   }
@@ -60,9 +60,9 @@ export default function TicketTable({ tickets = [] }) {
         </thead>
         <tbody className="divide-y divide-slate-100">
           {tickets.map((ticket) => (
-            <tr key={ticket.id} className="text-slate-700">
-              <td className="py-4 pr-4 font-medium text-slate-900">{ticket.id}</td>
-              <td className="py-4 pr-4">{ticket.customer}</td>
+            <tr key={ticket.ticket_id} className="text-slate-700">
+              <td className="py-4 pr-4 font-medium text-slate-900">{ticket.ticket_id}</td>
+              <td className="py-4 pr-4">{ticket.customer_name}</td>
               <td className="py-4 pr-4 max-w-xs truncate">{ticket.subject}</td>
               <td className="py-4 pr-4">
                 <PriorityBadge priority={ticket.priority} />
@@ -71,7 +71,13 @@ export default function TicketTable({ tickets = [] }) {
                 <StatusBadge status={ticket.status} />
               </td>
               <td className="py-4 pr-4 whitespace-nowrap text-slate-500">
-                {ticket.updated}
+                {ticket.updated_at
+                  ? new Date(ticket.updated_at).toLocaleDateString('en-US', {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric',
+                    })
+                  : '—'}
               </td>
               <td className="py-4">
                 <button
