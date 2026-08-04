@@ -19,6 +19,7 @@ def create_ticket(db:Session, ticket:TicketCreate):
                 subject=ticket.subject,
                 description=ticket.description,
                 status=TicketStatus.OPEN,
+                priority=ticket.priority,
                 )
 
         db.add(db_ticket)
@@ -71,6 +72,7 @@ def update_ticket(db:Session, ticket_id:str, ticket_update:TicketUpdate):
 
     ticket.status=ticket_update.status
 
+
     if ticket_update.note_text:
         note=Note(
             ticket_id=ticket.id,
@@ -78,6 +80,9 @@ def update_ticket(db:Session, ticket_id:str, ticket_update:TicketUpdate):
         )
 
         db.add(note)
+
+    if ticket_update.priority:
+        ticket.priority=ticket_update.priority
 
     db.commit()
     db.refresh(ticket)

@@ -4,6 +4,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
 from app.core.database import Base
 from app.enums.ticket_status import TicketStatus
+from app.enums.ticket_priority import TicketPriority
 
 class Ticket(Base):
     __tablename__="tickets"
@@ -16,5 +17,8 @@ class Ticket(Base):
     status=Column(Enum(TicketStatus,name="ticket_status"),
                   nullable=False,
                   default=TicketStatus.OPEN,)
+    priority=Column(Enum(TicketPriority, name="ticket_priority"),
+                    nullable=False,
+                    default=TicketPriority.MEDIUM)
     created_at=Column(DateTime(timezone=True),server_default=func.now())
     updated_at=Column(DateTime(timezone=True),server_default=func.now(),onupdate=func.now(),)
