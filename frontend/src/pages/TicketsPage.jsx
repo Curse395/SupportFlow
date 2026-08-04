@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import axios from 'axios'
 import { Plus, Search } from 'lucide-react'
 import TicketDetailDrawer from '../components/tickets/TicketDetailDrawer'
@@ -20,6 +21,7 @@ export default function TicketsPage() {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [createModalOpen, setCreateModalOpen] = useState(false)
   const { showToast } = useToast()
+  const [searchParams] = useSearchParams()
 
   const fetchTickets = useCallback(async (searchValue = '', statusValue = 'All', pageValue = 1) => {
     setLoading(true)
@@ -52,12 +54,19 @@ export default function TicketsPage() {
   }, [search, statusFilter])
 
   useEffect(() => {
+    // Open drawer if `open` query param present (from global search)
+    const openId = searchParams.get('open')
+    if (openId) {
+      setSelectedTicketId(openId)
+      setDrawerOpen(true)
+    }
+
     const timeoutId = setTimeout(() => {
       fetchTickets(search, statusFilter, page)
     }, 400)
 
     return () => clearTimeout(timeoutId)
-  }, [fetchTickets, page, search, statusFilter])
+  }, [fetchTickets, page, search, statusFilter, searchParams])
 
   const handleViewTicket = (ticketId) => {
     setSelectedTicketId(ticketId)
