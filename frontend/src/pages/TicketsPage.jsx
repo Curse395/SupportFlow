@@ -8,25 +8,47 @@ import CreateTicketModal from '../components/tickets/CreateTicketModal'
 export default function TicketsPage() {
   const [tickets, setTickets] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [search, setSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState('All')
+  const [priorityFilter, setPriorityFilter] = useState('All')
   const [selectedTicketId, setSelectedTicketId] = useState(null)
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [createModalOpen, setCreateModalOpen] = useState(false)
   const [successMessage, setSuccessMessage] = useState('')
 
-  const fetchTickets = useCallback(async () => {
+  const fetchTickets = useCallback(async (searchValue = '', statusValue = 'All') => {
+    setLoading(true)
+    setError('')
+
     try {
-      const response = await axios.get('http://127.0.0.1:8000/api/tickets/')
+      const params = {}
+
+      if (searchValue.trim()) {
+        params.search = searchValue.trim()
+      }
+
+      if (statusValue !== 'All') {
+        params.status = statusValue
+      }
+
+      const response = await axios.get('http://127.0.0.1:8000/api/tickets/', { params })
       setTickets(response.data)
     } catch {
       setTickets([])
+      setError('We couldn’t load tickets. Please try again later.')
     } finally {
       setLoading(false)
     }
   }, [])
 
   useEffect(() => {
-    fetchTickets()
-  }, [fetchTickets])
+    const timeoutId = setTimeout(() => {
+      fetchTickets(search, statusFilter)
+    }, 400)
+
+    return () => clearTimeout(timeoutId)
+  }, [fetchTickets, search, statusFilter])
 
   const handleViewTicket = (ticketId) => {
     setSelectedTicketId(ticketId)
@@ -39,9 +61,14 @@ export default function TicketsPage() {
   }
 
   const handleTicketCreated = async () => {
-    await fetchTickets()
+    await fetchTickets(search, statusFilter)
     setSuccessMessage('Ticket created successfully.')
   }
+
+  const displayedTickets =
+    priorityFilter === 'All'
+      ? tickets
+      : tickets.filter((ticket) => ticket.priority === priorityFilter)
 
   return (
     <div className="space-y-6">
@@ -64,13 +91,16 @@ export default function TicketsPage() {
                 type="search"
                 placeholder="Search tickets..."
                 aria-label="Search tickets"
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
                 className="h-10 w-full rounded-lg border border-slate-200 bg-white pr-4 pl-9 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20"
               />
             </div>
 
             <select
               aria-label="Filter by status"
-              defaultValue="All"
+              value={statusFilter}
+              onChange={(event) => setStatusFilter(event.target.value)}
               className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20"
             >
               <option value="All">All</option>
@@ -81,7 +111,8 @@ export default function TicketsPage() {
 
             <select
               aria-label="Filter by priority"
-              defaultValue="All"
+              value={priorityFilter}
+              onChange={(event) => setPriorityFilter(event.target.value)}
               className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20"
             >
               <option value="All">All</option>
@@ -116,8 +147,12 @@ export default function TicketsPage() {
           <p className="py-16 text-center text-sm font-medium text-slate-500">
             Loading...
           </p>
+        ) : error ? (
+          <p className="py-16 text-center text-sm font-medium text-red-600" role="alert">
+            {error}
+          </p>
         ) : (
-          <TicketTable tickets={tickets} onViewTicket={handleViewTicket} />
+          <TicketTable tickets={displayedTickets} onViewTicket={handleViewTicket} />
         )}
       </div>
 
