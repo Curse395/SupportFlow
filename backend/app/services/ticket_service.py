@@ -34,7 +34,7 @@ def create_ticket(db:Session, ticket:TicketCreate):
 
 
 
-def get_all_tickets(db:Session,status:str | None=None, search:  str | None=None):
+def get_all_tickets(db:Session, status: TicketStatus | None = None, search: str | None = None, page: int = 1, limit: int = 10, sort: str = "newest"):
     query =db.query(Ticket)
 
     if status:
@@ -51,7 +51,15 @@ def get_all_tickets(db:Session,status:str | None=None, search:  str | None=None)
             )
         )
 
-    return query.order_by(Ticket.created_at.desc()).all()
+    if sort =="oldest":
+        query=query.order_by(Ticket.created_at.asc())
+    else:
+        query=query.order_by(Ticket.created_at.desc())
+
+    offset=(page-1)*limit
+
+    tickets=(query.offset(offset).limit(limit).all())
+    return tickets
 
 
 def get_ticket_by_id(db: Session, ticket_id:str):
@@ -91,10 +99,11 @@ def update_ticket(db:Session, ticket_id:str, ticket_update:TicketUpdate):
 
 def get_ticket_details(db: Session,ticket_id:str):
     ticket=(db.query(Ticket).filter(Ticket.ticket_id==ticket_id).first())
-    notes=(db.query(Note).filter(Note.ticket_id==ticket.id).order_by(Note.created_at.asc()).all())
 
     if not ticket:
         raise HTTPException(status_code=404,detail="ticket not found")
+
+    notes=(db.query(Note).filter(Note.ticket_id==ticket.id).order_by(Note.created_at.desc()).all())
 
     return{"ticket":ticket,
            "notes":notes}

@@ -19,9 +19,12 @@ def create_new_ticket(
 def get_tickets(
     status:str | None=None,
     search:str | None=None,
+    page:int =1,
+    limit:int=10,
+    sort:str="newest",
     db: Session=Depends(get_db),
 ):
-    return get_all_tickets(db, status, search)
+    return get_all_tickets(db, status, search,page,limit,sort)
 
 
 @router.get("/{ticket_id}",response_model=TicketDetailResponse)
