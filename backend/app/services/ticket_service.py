@@ -47,6 +47,7 @@ def get_all_tickets(db:Session,status:str | None=None, search:  str | None=None)
                 Ticket.customer_email.ilike(f"%{search}%"),
                 Ticket.subject.ilike(f"%{search}%"),
                 Ticket.ticket_id.ilike(f"%{search}%"),
+                Ticket.description.ilike(f"%{search}%")
             )
         )
 
@@ -87,3 +88,13 @@ def update_ticket(db:Session, ticket_id:str, ticket_update:TicketUpdate):
     db.commit()
     db.refresh(ticket)
     return ticket 
+
+def get_ticket_details(db: Session,ticket_id:str):
+    ticket=(db.query(Ticket).filter(Ticket.ticket_id==ticket_id).first())
+    notes=(db.query(Note).filter(Note.ticket_id==ticket.id).order_by(Note.created_at.asc()).all())
+
+    if not ticket:
+        raise HTTPException(status_code=404,detail="ticket not found")
+
+    return{"ticket":ticket,
+           "notes":notes}

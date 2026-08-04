@@ -4,6 +4,7 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict,EmailStr
 from app.enums.ticket_status import TicketStatus
 from app.enums.ticket_priority import TicketPriority
+from app.schemas.note import NoteResponse
 
 class TicketCreate(BaseModel):
     customer_name:str
@@ -30,3 +31,9 @@ class TicketResponse(BaseModel):
     priority:TicketPriority
 
     model_config=ConfigDict(from_attributes=True)
+
+class TicketDetailResponse(BaseModel):
+    ticket:TicketResponse
+    notes:list[NoteResponse]
+
+    model_config={"from_attributes":True}
