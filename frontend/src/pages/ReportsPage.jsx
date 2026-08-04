@@ -85,7 +85,7 @@ export default function ReportsPage() {
           type="button"
           onClick={handleExport}
           disabled={downloading}
-          className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
+          className="inline-flex h-10 items-center justify-center gap-2 self-start rounded-lg bg-blue-600 px-4 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
         >
           <Download className="h-4 w-4" aria-hidden="true" />
           {downloading ? 'Exporting...' : 'Export CSV'}

@@ -88,7 +88,7 @@ export default function TicketsPage() {
         </p>
       </div>
 
-      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
             <div className="relative min-w-[200px] flex-1 sm:max-w-xs">
@@ -110,7 +110,7 @@ export default function TicketsPage() {
               aria-label="Filter by status"
               value={statusFilter}
               onChange={(event) => setStatusFilter(event.target.value)}
-              className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20"
+              className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20 sm:w-auto"
             >
               <option value="All">All</option>
               <option value="Open">Open</option>
@@ -122,7 +122,7 @@ export default function TicketsPage() {
               aria-label="Filter by priority"
               value={priorityFilter}
               onChange={(event) => setPriorityFilter(event.target.value)}
-              className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20"
+              className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20 sm:w-auto"
             >
               <option value="All">All</option>
               <option value="Low">Low</option>
@@ -136,7 +136,7 @@ export default function TicketsPage() {
             onClick={() => {
               setCreateModalOpen(true)
             }}
-            className="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700"
+            className="inline-flex h-10 w-full shrink-0 items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700 sm:w-auto"
           >
             <Plus className="h-4 w-4" aria-hidden="true" />
             Create Ticket
@@ -144,7 +144,7 @@ export default function TicketsPage() {
         </div>
       </div>
 
-      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
         {loading ? (
           <TicketTableSkeleton />
         ) : error ? (
@@ -159,12 +159,12 @@ export default function TicketsPage() {
               emptyTitle={hasActiveFilters ? 'No tickets match your filters' : 'No tickets found'}
               emptyDescription={hasActiveFilters ? 'Try adjusting your search or filter selection.' : 'Create a ticket to get started.'}
             />
-            <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-4">
+            <div className="mt-4 flex flex-col gap-3 border-t border-slate-100 pt-4 sm:flex-row sm:items-center sm:justify-between">
               <button
                 type="button"
                 onClick={() => setPage((currentPage) => currentPage - 1)}
                 disabled={page === 1}
-                className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+                className="w-full rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
               >
                 Previous
               </button>
@@ -173,7 +173,7 @@ export default function TicketsPage() {
                 type="button"
                 onClick={() => setPage((currentPage) => currentPage + 1)}
                 disabled={tickets.length < PAGE_LIMIT}
-                className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+                className="w-full rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
               >
                 Next
               </button>

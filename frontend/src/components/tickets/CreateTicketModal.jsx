@@ -62,12 +62,12 @@ export default function CreateTicketModal({ open, onClose, onCreated }) {
       />
 
       <section
-        className="relative z-10 w-full max-w-lg rounded-xl border border-slate-200 bg-white shadow-xl"
+        className="relative z-10 max-h-[calc(100vh-2rem)] w-full max-w-lg overflow-y-auto rounded-xl border border-slate-200 bg-white shadow-xl"
         role="dialog"
         aria-modal="true"
         aria-labelledby="create-ticket-title"
       >
-        <header className="flex items-center justify-between border-b border-slate-200 px-6 py-4">
+        <header className="flex items-center justify-between border-b border-slate-200 px-4 py-4 sm:px-6">
           <h2 id="create-ticket-title" className="text-lg font-semibold text-slate-900">
             Create Ticket
           </h2>
@@ -83,7 +83,7 @@ export default function CreateTicketModal({ open, onClose, onCreated }) {
         </header>
 
         <form onSubmit={handleSubmit}>
-          <div className="space-y-4 px-6 py-5">
+          <div className="space-y-4 px-4 py-5 sm:px-6">
             {error && (
               <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700" role="alert">
                 {error}
@@ -121,11 +121,11 @@ export default function CreateTicketModal({ open, onClose, onCreated }) {
             </label>
           </div>
 
-          <footer className="flex justify-end gap-3 border-t border-slate-200 px-6 py-4">
-            <button type="button" onClick={handleClose} disabled={submitting} className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50">
+          <footer className="flex flex-col-reverse gap-3 border-t border-slate-200 px-4 py-4 sm:flex-row sm:justify-end sm:px-6">
+            <button type="button" onClick={handleClose} disabled={submitting} className="w-full rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto">
               Cancel
             </button>
-            <button type="submit" disabled={submitting} className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70">
+            <button type="submit" disabled={submitting} className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto">
               {submitting && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
               {submitting ? 'Creating...' : 'Create Ticket'}
             </button>

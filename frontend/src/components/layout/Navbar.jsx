@@ -4,6 +4,7 @@ import { Bell, Menu, Search } from 'lucide-react'
 const pageTitles = {
   '/': 'Dashboard',
   '/tickets': 'Tickets',
+  '/reports': 'Reports',
 }
 
 export default function Navbar({ onMenuClick }) {
