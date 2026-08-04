@@ -19,7 +19,7 @@ const accents = {
   },
 }
 
-export default function KpiCard({ icon: Icon, title, value, accent = 'blue' }) {
+export default function KpiCard({ icon: Icon, title, value, accent = 'blue', loading = false }) {
   const { bar, icon } = accents[accent] ?? accents.blue
 
   return (
@@ -29,9 +29,13 @@ export default function KpiCard({ icon: Icon, title, value, accent = 'blue' }) {
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
           <p className="text-sm font-medium text-slate-500">{title}</p>
-          <p className="mt-2 text-3xl font-bold tracking-tight text-slate-900">
-            {value}
-          </p>
+          {loading ? (
+            <div className="mt-3 h-9 w-20 animate-pulse rounded bg-slate-200" aria-label={`Loading ${title}`} />
+          ) : (
+            <p className="mt-2 text-3xl font-bold tracking-tight text-slate-900">
+              {value}
+            </p>
+          )}
         </div>
 
         <div
