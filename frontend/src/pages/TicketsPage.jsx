@@ -5,6 +5,8 @@ import TicketDetailDrawer from '../components/tickets/TicketDetailDrawer'
 import TicketTable from '../components/tickets/TicketTable'
 import CreateTicketModal from '../components/tickets/CreateTicketModal'
 
+const PAGE_LIMIT = 10
+
 export default function TicketsPage() {
   const [tickets, setTickets] = useState([])
   const [loading, setLoading] = useState(true)
@@ -12,17 +14,18 @@ export default function TicketsPage() {
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('All')
   const [priorityFilter, setPriorityFilter] = useState('All')
+  const [page, setPage] = useState(1)
   const [selectedTicketId, setSelectedTicketId] = useState(null)
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [createModalOpen, setCreateModalOpen] = useState(false)
   const [successMessage, setSuccessMessage] = useState('')
 
-  const fetchTickets = useCallback(async (searchValue = '', statusValue = 'All') => {
+  const fetchTickets = useCallback(async (searchValue = '', statusValue = 'All', pageValue = 1) => {
     setLoading(true)
     setError('')
 
     try {
-      const params = {}
+      const params = { page: pageValue, limit: PAGE_LIMIT }
 
       if (searchValue.trim()) {
         params.search = searchValue.trim()
@@ -43,12 +46,16 @@ export default function TicketsPage() {
   }, [])
 
   useEffect(() => {
+    setPage(1)
+  }, [search, statusFilter])
+
+  useEffect(() => {
     const timeoutId = setTimeout(() => {
-      fetchTickets(search, statusFilter)
+      fetchTickets(search, statusFilter, page)
     }, 400)
 
     return () => clearTimeout(timeoutId)
-  }, [fetchTickets, search, statusFilter])
+  }, [fetchTickets, page, search, statusFilter])
 
   const handleViewTicket = (ticketId) => {
     setSelectedTicketId(ticketId)
@@ -61,7 +68,7 @@ export default function TicketsPage() {
   }
 
   const handleTicketCreated = async () => {
-    await fetchTickets(search, statusFilter)
+    await fetchTickets(search, statusFilter, page)
     setSuccessMessage('Ticket created successfully.')
   }
 
@@ -152,7 +159,28 @@ export default function TicketsPage() {
             {error}
           </p>
         ) : (
-          <TicketTable tickets={displayedTickets} onViewTicket={handleViewTicket} />
+          <>
+            <TicketTable tickets={displayedTickets} onViewTicket={handleViewTicket} />
+            <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-4">
+              <button
+                type="button"
+                onClick={() => setPage((currentPage) => currentPage - 1)}
+                disabled={page === 1}
+                className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Previous
+              </button>
+              <p className="text-sm text-slate-500">Page {page}</p>
+              <button
+                type="button"
+                onClick={() => setPage((currentPage) => currentPage + 1)}
+                disabled={tickets.length < PAGE_LIMIT}
+                className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
+          </>
         )}
       </div>
 
