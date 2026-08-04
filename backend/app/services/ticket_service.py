@@ -1,4 +1,6 @@
+import csv
 import uuid
+from io import StringIO
 from sqlalchemy.orm import Session
 from sqlalchemy import or_ 
 from fastapi import HTTPException, status
@@ -107,3 +109,33 @@ def get_ticket_details(db: Session,ticket_id:str):
 
     return{"ticket":ticket,
            "notes":notes}
+
+
+def export_tickets_csv(db: Session) -> str:
+    tickets = db.query(Ticket).order_by(Ticket.created_at.desc()).all()
+    output = StringIO()
+    writer = csv.writer(output)
+    writer.writerow([
+        "Ticket ID",
+        "Customer Name",
+        "Customer Email",
+        "Subject",
+        "Priority",
+        "Status",
+        "Created At",
+        "Updated At",
+    ])
+
+    for ticket in tickets:
+        writer.writerow([
+            ticket.ticket_id,
+            ticket.customer_name,
+            ticket.customer_email,
+            ticket.subject,
+            ticket.priority.value,
+            ticket.status.value,
+            ticket.created_at.isoformat() if ticket.created_at else "",
+            ticket.updated_at.isoformat() if ticket.updated_at else "",
+        ])
+
+    return output.getvalue()
