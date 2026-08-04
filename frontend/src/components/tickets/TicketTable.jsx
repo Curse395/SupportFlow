@@ -32,6 +32,35 @@ function PriorityBadge({ priority }) {
   )
 }
 
+export function TicketTableSkeleton() {
+  return (
+    <div className="overflow-x-auto" aria-label="Loading tickets">
+      <table className="w-full min-w-[800px] text-left text-sm">
+        <thead>
+          <tr className="border-b border-slate-200">
+            {Array.from({ length: 7 }, (_, index) => (
+              <th key={index} className="pb-3 pr-4">
+                <div className="h-4 w-16 animate-pulse rounded bg-slate-200" />
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-slate-100">
+          {Array.from({ length: 6 }, (_, index) => (
+            <tr key={index}>
+              {Array.from({ length: 7 }, (_, cellIndex) => (
+                <td key={cellIndex} className="py-4 pr-4">
+                  <div className={`h-4 animate-pulse rounded bg-slate-200 ${cellIndex === 2 ? 'w-40' : 'w-20'}`} />
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
 export default function TicketTable({ tickets = [], onViewTicket }) {
   if (tickets.length === 0) {
     return (

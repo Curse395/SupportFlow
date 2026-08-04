@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import axios from 'axios'
 import { Plus, Search } from 'lucide-react'
 import TicketDetailDrawer from '../components/tickets/TicketDetailDrawer'
-import TicketTable from '../components/tickets/TicketTable'
+import TicketTable, { TicketTableSkeleton } from '../components/tickets/TicketTable'
 import CreateTicketModal from '../components/tickets/CreateTicketModal'
 import useToast from '../hooks/useToast'
 
@@ -145,9 +145,7 @@ export default function TicketsPage() {
 
       <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         {loading ? (
-          <p className="py-16 text-center text-sm font-medium text-slate-500">
-            Loading...
-          </p>
+          <TicketTableSkeleton />
         ) : error ? (
           <p className="py-16 text-center text-sm font-medium text-red-600" role="alert">
             {error}
