@@ -15,6 +15,7 @@ import {
 } from 'recharts'
 import DashboardCard from '../components/dashboard/DashboardCard'
 import KpiCard from '../components/dashboard/KpiCard'
+import useToast from '../hooks/useToast'
 
 const kpiMetrics = [
   { title: 'Total Tickets', key: 'total_tickets', icon: Ticket, accent: 'blue' },
@@ -66,6 +67,7 @@ export default function DashboardPage() {
   const [tickets, setTickets] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
+  const { showToast } = useToast()
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -78,13 +80,14 @@ export default function DashboardPage() {
         setTickets(ticketsResponse.data)
       } catch {
         setError(true)
+        showToast('We couldn’t load dashboard statistics. Please try again later.', 'error')
       } finally {
         setLoading(false)
       }
     }
 
     fetchStats()
-  }, [])
+  }, [showToast])
 
   const statusData = [
     { name: 'Open', value: stats?.open ?? 0 },

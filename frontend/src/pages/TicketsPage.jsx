@@ -4,6 +4,7 @@ import { Plus, Search } from 'lucide-react'
 import TicketDetailDrawer from '../components/tickets/TicketDetailDrawer'
 import TicketTable from '../components/tickets/TicketTable'
 import CreateTicketModal from '../components/tickets/CreateTicketModal'
+import useToast from '../hooks/useToast'
 
 const PAGE_LIMIT = 10
 
@@ -18,7 +19,7 @@ export default function TicketsPage() {
   const [selectedTicketId, setSelectedTicketId] = useState(null)
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [createModalOpen, setCreateModalOpen] = useState(false)
-  const [successMessage, setSuccessMessage] = useState('')
+  const { showToast } = useToast()
 
   const fetchTickets = useCallback(async (searchValue = '', statusValue = 'All', pageValue = 1) => {
     setLoading(true)
@@ -40,10 +41,11 @@ export default function TicketsPage() {
     } catch {
       setTickets([])
       setError('We couldn’t load tickets. Please try again later.')
+      showToast('We couldn’t load tickets. Please try again later.', 'error')
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [showToast])
 
   useEffect(() => {
     setPage(1)
@@ -69,7 +71,6 @@ export default function TicketsPage() {
 
   const handleTicketCreated = async () => {
     await fetchTickets(search, statusFilter, page)
-    setSuccessMessage('Ticket created successfully.')
   }
 
   const displayedTickets =
@@ -132,7 +133,6 @@ export default function TicketsPage() {
           <button
             type="button"
             onClick={() => {
-              setSuccessMessage('')
               setCreateModalOpen(true)
             }}
             className="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700"
@@ -142,12 +142,6 @@ export default function TicketsPage() {
           </button>
         </div>
       </div>
-
-      {successMessage && (
-        <p className="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-700" role="status">
-          {successMessage}
-        </p>
-      )}
 
       <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         {loading ? (

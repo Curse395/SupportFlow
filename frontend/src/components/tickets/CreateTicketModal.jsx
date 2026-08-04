@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import axios from 'axios'
 import { Loader2, X } from 'lucide-react'
+import useToast from '../../hooks/useToast'
 
 const initialForm = {
   customer_name: '',
@@ -17,6 +18,7 @@ export default function CreateTicketModal({ open, onClose, onCreated }) {
   const [form, setForm] = useState(initialForm)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
+  const { showToast } = useToast()
 
   if (!open) return null
 
@@ -41,8 +43,10 @@ export default function CreateTicketModal({ open, onClose, onCreated }) {
       await onCreated()
       setForm(initialForm)
       onClose()
+      showToast('Ticket created successfully.')
     } catch {
       setError('Unable to create the ticket. Please try again.')
+      showToast('Unable to create the ticket. Please try again.', 'error')
     } finally {
       setSubmitting(false)
     }

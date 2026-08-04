@@ -3,6 +3,7 @@ import axios from 'axios'
 import { Download, FileBarChart } from 'lucide-react'
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import DashboardCard from '../components/dashboard/DashboardCard'
+import useToast from '../hooks/useToast'
 
 function toChartData(data, labelKey) {
   if (Array.isArray(data)) {
@@ -29,6 +30,7 @@ export default function ReportsPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [downloading, setDownloading] = useState(false)
+  const { showToast } = useToast()
 
   useEffect(() => {
     const fetchSummary = async () => {
@@ -37,13 +39,14 @@ export default function ReportsPage() {
         setSummary(response.data)
       } catch {
         setError('We couldn’t load reports right now. Please try again later.')
+        showToast('We couldn’t load reports right now. Please try again later.', 'error')
       } finally {
         setLoading(false)
       }
     }
 
     fetchSummary()
-  }, [])
+  }, [showToast])
 
   const handleExport = async () => {
     setDownloading(true)
@@ -58,8 +61,10 @@ export default function ReportsPage() {
       link.download = 'tickets.csv'
       link.click()
       URL.revokeObjectURL(url)
+      showToast('Ticket report exported successfully.')
     } catch {
       setError('We couldn’t export the ticket report. Please try again later.')
+      showToast('We couldn’t export the ticket report. Please try again later.', 'error')
     } finally {
       setDownloading(false)
     }
