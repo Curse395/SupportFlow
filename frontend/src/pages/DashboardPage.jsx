@@ -86,7 +86,7 @@ export default function DashboardPage() {
           let currentPage = 1
 
           while (true) {
-            const response = await axios.get('http://127.0.0.1:8000/api/tickets/', {
+            const response = await axios.get('/api/tickets/', {
               params: { page: currentPage, limit },
             })
             allTickets.push(...response.data)
@@ -100,7 +100,7 @@ export default function DashboardPage() {
         }
 
         const [statsResponse, allTickets] = await Promise.all([
-          axios.get('http://127.0.0.1:8000/api/dashboard/stats'),
+          axios.get('/api/dashboard/stats'),
           fetchAllTickets(),
         ])
         setStats(statsResponse.data)

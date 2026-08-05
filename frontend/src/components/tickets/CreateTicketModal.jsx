@@ -39,7 +39,7 @@ export default function CreateTicketModal({ open, onClose, onCreated }) {
     setSubmitting(true)
 
     try {
-      await axios.post('http://127.0.0.1:8000/api/tickets/', form)
+      await axios.post('/api/tickets/', form)
       await onCreated()
       setForm(initialForm)
       onClose()

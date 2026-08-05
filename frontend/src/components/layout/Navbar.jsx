@@ -51,7 +51,7 @@ export default function Navbar({ onMenuClick }) {
 
     const id = setTimeout(async () => {
       try {
-        const res = await axios.get('http://127.0.0.1:8000/api/tickets/', { params: { search: ticketQuery, limit: 5 } })
+        const res = await axios.get('/api/tickets/', { params: { search: ticketQuery, limit: 5 } })
         const data = Array.isArray(res.data) ? res.data : res.data.results ?? []
         setSuggestions(data)
         setSuggestionsVisible(true)

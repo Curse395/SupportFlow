@@ -38,7 +38,7 @@ export default function TicketsPage() {
         params.status = statusValue
       }
 
-      const response = await axios.get('http://127.0.0.1:8000/api/tickets/', { params })
+      const response = await axios.get('/api/tickets/', { params })
       setTickets(response.data)
     } catch {
       setTickets([])

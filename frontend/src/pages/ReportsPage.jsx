@@ -35,7 +35,7 @@ export default function ReportsPage() {
   useEffect(() => {
     const fetchSummary = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/reports/monthly-summary')
+        const response = await axios.get('/api/reports/monthly-summary')
         setSummary(response.data)
       } catch {
         setError('We couldn’t load reports right now. Please try again later.')
@@ -52,7 +52,7 @@ export default function ReportsPage() {
     setDownloading(true)
 
     try {
-      const response = await axios.get('http://127.0.0.1:8000/api/reports/export/csv', {
+      const response = await axios.get('/api/reports/export/csv', {
         responseType: 'blob',
       })
       const url = URL.createObjectURL(new Blob([response.data], { type: 'text/csv' }))
