@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import axios from '../../api/client'
 import { Loader2, X } from 'lucide-react'
 
 const statusStyles = {

@@ -1,4 +1,5 @@
 alembic==1.18.5
+argon2-cffi>=23.1,<26
 annotated-doc==0.0.5
 annotated-types==0.8.0
 anyio==4.14.2
@@ -9,6 +10,7 @@ dnspython==2.8.0
 email-validator==2.3.0
 exceptiongroup==1.3.1
 fastapi==0.141.1
+PyJWT>=2.10,<3
 greenlet==3.5.4
 h11==0.16.0
 idna==3.18

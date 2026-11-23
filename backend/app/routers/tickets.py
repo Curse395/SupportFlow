@@ -3,14 +3,21 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.schemas.ticket import TicketCreate, TicketResponse, TicketUpdate ,TicketDetailResponse
 from app.services.ticket_service import create_ticket,get_all_tickets,update_ticket,get_ticket_details
+from app.core.security import get_current_user, require_roles
+from app.enums.user_role import UserRole
 
-router=APIRouter(prefix="/api/tickets",tags=["Tickets"],)
+router=APIRouter(
+    prefix="/api/tickets",
+    tags=["Tickets"],
+    dependencies=[Depends(get_current_user)],
+)
 
 
 @router.post("/", response_model=TicketResponse,status_code=status.HTTP_201_CREATED,)
 def create_new_ticket(
     ticket:TicketCreate,
     db:Session=Depends(get_db),
+    _user=Depends(require_roles(UserRole.ADMIN, UserRole.MANAGER, UserRole.SUPPORT_AGENT)),
     ):
     return create_ticket(db,ticket)
 
@@ -36,6 +43,7 @@ def get_ticket_by_id(ticket_id:str,
 @router.put("/{ticket_id}",response_model=TicketResponse)
 def update_existing_ticket(ticket_id:str,
                   ticket:TicketUpdate,
-                  db:Session=Depends(get_db)
+                  db:Session=Depends(get_db),
+                  _user=Depends(require_roles(UserRole.ADMIN, UserRole.MANAGER, UserRole.SUPPORT_AGENT)),
 ):
     return update_ticket(db, ticket_id,ticket)

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import axios from '../api/client'
 import { CheckCircle2, CircleDot, Clock, Ticket } from 'lucide-react'
 import {
   Bar,

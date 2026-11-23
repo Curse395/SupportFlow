@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import axios from 'axios'
+import axios from '../api/client'
 import { Plus, Search } from 'lucide-react'
 import TicketDetailDrawer from '../components/tickets/TicketDetailDrawer'
 import TicketTable, { TicketTableSkeleton } from '../components/tickets/TicketTable'

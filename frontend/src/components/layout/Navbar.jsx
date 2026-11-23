@@ -1,7 +1,8 @@
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Bell, Menu, Search } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import axios from 'axios'
+import axios from '../../api/client'
+import useAuth from '../../auth/useAuth'
 
 const pageTitles = {
   '/': 'Dashboard',
@@ -13,6 +14,7 @@ export default function Navbar({ onMenuClick }) {
   const { pathname } = useLocation()
   const title = pageTitles[pathname] ?? 'SupportFlow'
   const navigate = useNavigate()
+  const { user, logout } = useAuth()
 
   // Profile menu state and ref
   const { open, setOpen, menuRef } = useProfileMenuState()
@@ -64,15 +66,8 @@ export default function Navbar({ onMenuClick }) {
     return () => clearTimeout(id)
   }, [ticketQuery])
 
-  // User info (mock) and logout
-  const userName = typeof window !== 'undefined' ? window.localStorage.getItem('userName') || 'Admin' : 'Admin'
-  const userRole = typeof window !== 'undefined' ? window.localStorage.getItem('userRole') || 'Support Manager' : 'Support Manager'
-
   function handleLogout() {
-    if (typeof window !== 'undefined') {
-      window.localStorage.removeItem('userName')
-      window.localStorage.removeItem('userRole')
-    }
+    logout()
     navigate('/login')
   }
 
@@ -222,8 +217,8 @@ export default function Navbar({ onMenuClick }) {
               role="menu"
             >
               <div className="px-4 py-2">
-                <div className="text-sm font-medium text-slate-900">{userName}</div>
-                <div className="text-xs text-slate-500">{userRole}</div>
+                <div className="text-sm font-medium text-slate-900">{user?.full_name}</div>
+                <div className="text-xs text-slate-500">{user?.role}</div>
               </div>
               <div className="mt-2 border-t border-slate-100" />
               <button
