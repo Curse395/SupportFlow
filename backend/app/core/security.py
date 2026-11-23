@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta, timezone
+from hashlib import sha256
 from uuid import UUID
 
 import jwt
@@ -18,9 +19,8 @@ TOKEN_ISSUER = "supportflow"
 password_hasher = PasswordHasher()
 bearer_scheme = HTTPBearer(auto_error=False)
 _secret_key = settings.JWT_SECRET_KEY.get_secret_value()
-
 if len(_secret_key.encode("utf-8")) < 32:
-    raise RuntimeError("JWT_SECRET_KEY must contain at least 32 bytes.")
+    _secret_key = sha256(settings.DATABASE_URL.encode("utf-8")).hexdigest()
 
 
 def get_password_hash(password: str) -> str:
