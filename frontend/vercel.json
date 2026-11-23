@@ -3,7 +3,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://supportflowapp.duckdns.org/api/$1"
+      "destination": "https://support-flow-tred.vercel.app/api/$1"
     },
     {
       "source": "/(.*)",
